@@ -2,6 +2,8 @@
 <html>
 
 <head>
+  <title>Lab 2 | Task 1</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -14,7 +16,9 @@
     if (empty($_POST["name"])) {
       $nameErr = "Name is required";
     } elseif (str_word_count($_POST["name"]) < 2) {
-      $nameErr = "At least two words needed";
+      $nameErr = "Must contain at least two words";
+    } elseif (!preg_match('/^[a-z]/i', $_POST["name"])) {
+      $nameErr = "Name must start with letters";
     } elseif (!preg_match('/^[a-zA-Z ".-]+$/', $_POST["name"])) {
       $nameErr = "Can contain a-z, A-Z, period, dash only";
     } else {
@@ -31,55 +35,60 @@
 
     if (empty($_POST["date"])) $dobErr = "Date of Birth is required";
     else {
+      $year = date("Y", strtotime($dob));
+      if ((int)$year < 1900 || (int)$year > 2022) {
+        $dobErr = "The selected date must be in valid range";
+      } else $dob = $_POST["date"];
     }
-    $dob = $_POST["date"];
-  }
 
-  if (empty($_POST["gender"])) {
-    $genderErr = "You must select at least one";
-  } else {
-    $gender = $_POST["gender"];
-  }
+    if (empty($_POST["gender"])) {
+      $genderErr = "You must select at least one";
+    } else {
+      $gender = $_POST["gender"];
+    }
 
-  if (empty($_POST["degree"])) {
-    $degreeErr = "Cannot be empty";
-  } else {
-    $checked_arr = $_POST['degree'];
-    $count = count($checked_arr);
-    if ($count < 2) {
-      $degreeErr = "2 must be selected";
-    } else $degree = $_POST["degree"];
-  }
+    if (empty($_POST["degree"])) {
+      $degreeErr = "Cannot be empty";
+    } else {
+      $checked_arr = $_POST['degree'];
+      $count = count($checked_arr);
+      if ($count < 2) {
+        $degreeErr = "At least 2 must be selected";
+      } else $degree = $_POST["degree"];
+    }
 
-  if (empty($_POST["bloodGroup"])) {
-    $bloodErr = "Must select one";
-  } elseif ($_POST["bloodGroup"] == "none") {
-    $bloodErr = "Must select one";
-  } else {
-    $blood =  $_POST["bloodGroup"];
+    if (empty($_POST["bloodGroup"])) {
+      $bloodErr = "Must select one";
+    } elseif ($_POST["bloodGroup"] == "none") {
+      $bloodErr = "Must select one";
+    } else {
+      $blood =  $_POST["bloodGroup"];
+    }
   }
   ?>
 
+  <h2>PHP Form Validation</h2>
+  <h6>Lab 2 Task 1 | ID: 20-42707-1</h6>
   <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
     <label for="name" class="inpLabel">Name: </label>
     <input type="text" name="name">
-    <span class="">* <?php echo $nameErr; ?></span>
+    <span class="error">* <?php echo $nameErr; ?></span>
     <br><br>
     <label for="email" class="inpLabel">E-mail: </label>
     <input type="text" name="email">
-    <span class="">* <?php echo $emailErr; ?></span>
+    <span class="error">* <?php echo $emailErr; ?></span>
     <br><br>
 
     <label for="date" class="inpLabel">Date of Birth: </label>
     <input type="date" name="date" id="date">
-    <span class="">* <?php echo $dobErr; ?></span>
+    <span class="error">* <?php echo $dobErr; ?></span>
 
     <br><br>
     <label for="gender" class="inpLabel">Gender: </label>
     <input type="radio" name="gender" value="female">Female
     <input type="radio" name="gender" value="male">Male
     <input type="radio" name="gender" value="other">Other
-    <span class="">* <?php echo $genderErr; ?></span>
+    <span class="error">* <?php echo $genderErr; ?></span>
 
 
     <br><br>
@@ -92,7 +101,7 @@
     <label for="bsc">BSc</label>
     <input type="checkbox" name="degree[]" id="msc">
     <label for="msc">MSc</label>
-    <span class="">* <?php echo $degreeErr; ?></span>
+    <span class="error">* <?php echo $degreeErr; ?></span>
 
 
     <br><br>
@@ -100,15 +109,15 @@
     <select name="bloodGroup" id="bloodGroup">
       <option value="none"></option>
       <option value="Apos">A+</option>
+      <option value="Bpos">B+</option>
     </select>
-    <span class=""> <?php echo $bloodErr; ?></span>
+    <span class="error"> <?php echo $bloodErr; ?></span>
     <br><br>
 
-    <input type="submit" name="submit" value="Submit" class="submit">
+    <p class="submitBtn"><input type="submit" name="submit" value="Submit" class="submit"></p>
 
   </form>
 
 </body>
 
 </html>
-
